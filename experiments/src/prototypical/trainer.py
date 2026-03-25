@@ -8,7 +8,7 @@ from . import transforms
 
 from prototypical.config import config
 from data.config import config as data_config
-from data.ISIC18_T3_Dataset import ISIC18_T3_Dataset
+from data.ISIC19_Dataset import ISIC19_Dataset
 from utils import helpers
 
 from tqdm import tqdm
@@ -28,9 +28,9 @@ def init_seed(config):
 
 def init_dataset(config, data_config, mode):
 
-    dataset = ISIC18_T3_Dataset(
+    dataset = ISIC19_Dataset(
         mode=mode, 
-        root=data_config.isic18_t3_root_path,
+        root=data_config.isic19_root_path,
         transform=transforms.compose_transforms([
             transforms.get_resize_transform()
         ])
@@ -372,10 +372,11 @@ def train():
 
 def run():
 
-    training_data = ISIC18_T3_Dataset(
-	    os.path.join(data_config.csv_path, data_config.isic18_t3_train_csv),
-	    os.path.join(data_config.data_path, data_config.isic18_t3_train_dir)
-	)
+    #training_data = ISIC19_Dataset(
+	   # os.path.join(data_config.csv_path, data_config.isic18_t3_train_csv),
+	    #os.path.join(data_config.data_path, data_config.isic18_t3_train_dir)
+	#)
+    training_data = ISIC19_Dataset(mode='train') 
 
     train_dataloader = DataLoader(
         training_data, 

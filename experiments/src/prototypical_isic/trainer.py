@@ -221,26 +221,24 @@ def train():
     )
     best_state, best_acc, train_loss, train_acc, val_loss, val_acc = train_stats
 
-
 def run():
+    # 只需要传 mode，剩下的路径 Dataset 自己会根据 config 算出来
+    training_data = ISIC19_Dataset(mode='train') 
 
-    training_data = ISIC19_Dataset(
-	    os.path.join(data_config.csv_path, 'ISIC_2019_Training_GroundTruth.csv'),
-	    os.path.join(data_config.data_path, data_config.isic19_train_dir)
-	)
+    train_dataloader = DataLoader(training_data, batch_size=8, shuffle=True)
 
-    train_dataloader = DataLoader(
-        training_data, 
-        batch_size=8, 
-        shuffle=True
-    )
+    try:
+        imgs, labels = next(iter(train_dataloader))
+        print(f"成功读取 Batch！标签 ID: {labels[0]}")
+        
+        # 简单的显示逻辑
+        img_np = imgs[0].permute(1, 2, 0).numpy()
+        plot.imshow(img_np.astype('uint8') if img_np.max() > 1 else img_np)
+        plot.show()
+        print("Works!")
+    except Exception as e:
+        print(f"读取失败: {e}")
 
-    imgs, labels = next(iter(train_dataloader))
-    print(labels[0].squeeze())
-    plot.imshow(imgs[0])
-    plot.show()
-
-    print("Works!")
 
 if __name__ == '__main__':
     # main()

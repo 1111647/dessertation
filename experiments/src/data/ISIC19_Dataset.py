@@ -8,17 +8,28 @@ import torch
 from .config import config
 
 class ISIC19_Dataset(Dataset):
-    # 更新映射表以包含 SCC
     class_id_map = dict(MEL=0, NV=1, BCC=2, AK=3, BKL=4, DF=5, VASC=6, SCC=7)
 
-    def __init__(self, mode='ISIC_2019_Training_GroundTruth', transform=None):
+    def __init__(self, mode='train', transform=None):
         super(ISIC19_Dataset, self).__init__()
-        # 路径指向你生成的划分后的 CSV
-        self.csv_path = os.path.join(config.csv_root_path, f"ISIC19_{mode}.csv")
+        
+        # 1. 自动适配文件名逻辑
+        if mode == 'train' or mode == 'ISIC_2019_Training_GroundTruth':
+            csv_filename = "ISIC_2019_Training_GroundTruth.csv"
+            self.sub_folder = "train" # 对应你分好的文件夹
+        else:
+            csv_filename = f"ISIC19_{mode}.csv"
+            self.sub_folder = mode    # val 或 test
+            
+        self.csv_path = os.path.join(config.csv_root_path, csv_filename)
         self.csv_df = pd.read_csv(self.csv_path)
-        self.img_concrete_path = config.isic19_root_path # 使用 Drive 路径
+        
+        # 2. 自动适配图片子文件夹
+        # 路径应为：data/datasets/train (或 val/test)
+        self.img_concrete_path = os.path.join(config.isic19_root_path, self.sub_folder)
         self.transform = transform
 
+  
     def __getitem__(self, idx):
         if torch.is_tensor(idx): idx = idx.tolist()
         
