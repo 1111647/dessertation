@@ -1,5 +1,4 @@
-.token
-*/data/datasets/*
-*/logs/weights/*
-
-
+experiments/data/dataset/
+*.pth
+__pycache__/
+.ipynb_checkpoints/

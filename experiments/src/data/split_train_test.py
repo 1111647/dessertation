@@ -13,14 +13,18 @@ from pathlib import Path
 
 from .config import config 
 
-SPLIT_RATIOS = [0.20]
+# --- 修改以下变量 ---
+SPLIT_RATIOS = [0.20] # 20% 作为验证集
 SPLIT_DIR_NAMES = ["val"]
-SPLIT_CSV_NAMES = ["ISIC18_T3_val.csv"]
+SPLIT_CSV_NAMES = ["ISIC19_val.csv"]
 
-SRC_CSV_NAME = "ISIC18_T3_train.csv"
+# 原始文件名（根据你提供的信息）
+SRC_CSV_NAME = "ISIC_2019_Training_GroundTruth.csv"
 SRC_DIR_NAME = "train"
 
-DATA_ROOT_PATH = config.isic18_t3_root_path
+# 根路径指向 config 中新定义的 isic19 路径
+DATA_ROOT_PATH = "/content/few-shot-dermoscopic-image-analysis/experiments/data/dataset"
+
 DATA_EXTN = "jpg"
 
 assert len(SPLIT_RATIOS) == len(SPLIT_DIR_NAMES) == len(SPLIT_CSV_NAMES), "Split parameter lists must be of same length"
@@ -68,9 +72,10 @@ def split_data_all_classes():
             rows_for_split = class_rows_df.sample(
                 n = int(num_rows * ratio)
             )
-            split_dfs[idx] = split_dfs[idx].append(
-                rows_for_split, 
-                ignore_index=True
+            # 使用 pd.concat 代替
+            split_dfs[idx] = pd.concat(
+             [split_dfs[idx], rows_for_split], 
+              ignore_index=True
             )
             
             # drop split rows from main df
@@ -130,12 +135,12 @@ def split_data_all_classes():
 """
 def split_test_classes(
     test_classes=[
-        'AKIEC',
+        'SCC',
         'VASC',
         'DF'
     ],
     test_dir_name='test',
-    test_csv_name='ISIC18_T3_test.csv'
+    test_csv_name='ISIC19_test.csv'
 ):
 
     """
@@ -170,9 +175,9 @@ def split_test_classes(
         # get all rows for current class
         class_rows_df = alldata_csv_df.loc[alldata_csv_df[classname]==1.0, :]        
 
-        test_df = test_df.append(
-            class_rows_df,
-            ignore_index=True
+        test_df = pd.concat(
+         [test_df, class_rows_df], 
+         ignore_index=True
         )
 
         alldata_csv_df = alldata_csv_df.drop(class_rows_df.index)

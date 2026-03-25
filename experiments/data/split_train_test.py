@@ -12,15 +12,31 @@ import pandas as pd
 from pathlib import Path
 
 from .config import config 
+# experiments/src/data/split_train_test.py
 
-SPLIT_RATIOS = [0.30]
-SPLIT_DIR_NAMES = ["test"]
-SPLIT_CSV_NAMES = ["ISIC18_T3_test.csv"]
+# ... import 部分 ...
+# experiments/src/data/split_train_test.py
 
-SRC_CSV_NAME = "ISIC18_T3_train.csv"
-SRC_DIR_NAME = "train"
+# ... import 保持不变 ...
 
-DATA_ROOT_PATH = config.isic18_t3_root_path
+# --- 强制指定路径，忽略 config 里的错误拼接 ---
+
+# 1. 图像根目录 (指向你刚复制进去的那个包含 train 的文件夹)
+# 注意：确保这个路径下确实有一个叫 'train' 的文件夹
+DATA_ROOT_PATH = "/content/few-shot-dermoscopic-image-analysis/experiments/data/dataset"
+
+# 2. 原始文件夹名
+SRC_DIR_NAME = "train" 
+
+# 3. CSV 文件位置 (你刚才复制到了 experiments/data 下)
+# 这里我们直接覆盖 config.csv_root_path 的逻辑
+CSV_ROOT_PATH = "/content/few-shot-dermoscopic-image-analysis/experiments/data"
+SRC_CSV_NAME = "ISIC_2019_Training_GroundTruth.csv"
+
+# 4. 划分设置
+SPLIT_RATIOS = [0.20]
+SPLIT_DIR_NAMES = ["val"]
+SPLIT_CSV_NAMES = ["ISIC19_val.csv"]
 DATA_EXTN = "jpg"
 
 assert len(SPLIT_RATIOS) == len(SPLIT_DIR_NAMES) == len(SPLIT_CSV_NAMES), "Split parameter lists must be of same length"
@@ -68,9 +84,9 @@ def split_data_all_classes():
             rows_for_split = class_rows_df.sample(
                 n = int(num_rows * ratio)
             )
-            split_dfs[idx] = split_dfs[idx].append(
-                rows_for_split, 
-                ignore_index=True
+            split_dfs[idx] = pd.concat(
+             [split_dfs[idx], rows_for_split], 
+              ignore_index=True
             )
             
             # drop split rows from main df
@@ -130,12 +146,12 @@ def split_data_all_classes():
 """
 def split_test_classes(
     test_classes=[
-        'AKIEC',
+        'SCC',
         'VASC',
         'DF'
     ],
-    test_dir_name='isolated',
-    test_csv_name='ISIC18_T3_isolated.csv'
+    test_dir_name='test',
+    test_csv_name='ISIC19_test.csv'
 ):
 
     """
@@ -170,9 +186,9 @@ def split_test_classes(
         # get all rows for current class
         class_rows_df = alldata_csv_df.loc[alldata_csv_df[classname]==1.0, :]        
 
-        test_df = test_df.append(
-            class_rows_df,
-            ignore_index=True
+        test_df = pd.concat(
+        [test_df, class_rows_df], 
+         ignore_index=True
         )
 
         alldata_csv_df = alldata_csv_df.drop(class_rows_df.index)

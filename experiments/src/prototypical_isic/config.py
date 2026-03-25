@@ -14,16 +14,19 @@ config.update(
         learning_rate = 1e-03,
         lr_scheduler_step = 20,
         lr_scheduler_gamma = 0.5,
-        iterations = 50,
-        classes_per_it_tr = 4,
-        num_support_tr = 15,  # 15-shot training
-        num_query_tr = 10,    
+        iterations = 100,
+        classes_per_it_tr = 5,
+        num_support_tr = 1,  # 15-shot training
+        num_query_tr = 10,  
+
         classes_per_it_val = 5,
-        num_support_val = 3,        # 3-shot testing
-        num_query_val = 10,   
-        classes_per_it_test = 2,  
-        num_support_test = 3,     # 3-shot testing
-        num_query_test = 10,   
+        num_support_val = 1,        # 3-shot testing
+        num_query_val = 10, 
+
+        classes_per_it_test = 3,  
+        num_support_test = 1,     # 3-shot testing
+        num_query_test = 10, 
+          
         manual_seed = 7,
         cuda = True
     )
