@@ -30,7 +30,7 @@ def init_dataset(config, data_config, mode):
 
     dataset = ISIC19_Dataset(
         mode=mode, 
-        root=data_config.isic19_root_path,
+        #root=data_config.isic19_root_path,
         transform=transforms.compose_transforms([
             transforms.get_resize_transform()
         ])
