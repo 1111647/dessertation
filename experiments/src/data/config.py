@@ -16,7 +16,7 @@ config.update(
         data_root_path = os.path.join(
             config.root_path, 
             'data', 
-            'datasets'
+            'dataset'
         ),
     )
 )

@@ -21,7 +21,7 @@ trainer.train()
 # cnw_tester_derm7.test()
 
 #
-#split_train_test.split_test_classes()
-#split_train_test.split_data_all_classes()
+split_train_test.split_test_classes()
+split_train_test.split_data_all_classes()
 
 # run()

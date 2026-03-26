@@ -18,9 +18,9 @@ config.update(
 
 config.update(
     DotDict(
-        epochs = 100,
+        epochs = 200,
         learning_rate = 1e-03,
-        lr_scheduler_step = 20,
+        lr_scheduler_step = 40,
         lr_scheduler_gamma = 0.5,
         iterations = 100,
 
